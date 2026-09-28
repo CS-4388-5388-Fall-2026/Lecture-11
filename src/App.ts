@@ -4,12 +4,15 @@
  * License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.  Adapted from course materials by Evan Suma Rosenberg.
  */ 
 
+import { VertexLayout } from '@gltf-transform/core';
 import * as gfx from 'gophergfx'
 
 export class App extends gfx.GfxApp
 {
 
     private cameraControls: gfx.OrbitControls;
+
+    private cylinder: gfx.Mesh3;
     // --- Create the App class ---
     constructor()
     {
@@ -17,6 +20,7 @@ export class App extends gfx.GfxApp
         super();
 
         this.cameraControls = new gfx.OrbitControls(this.camera);
+        this.cylinder = new gfx.Mesh3();
     }
 
 
@@ -38,6 +42,8 @@ export class App extends gfx.GfxApp
         const directionalLight = new gfx.DirectionalLight(new gfx.Color(0.6, 0.6, 0.6));
         directionalLight.position.set(1, 2, 1);
 
+        this.createCylinder(this.cylinder, 10, 2);
+        this.scene.add(this.cylinder);
 
         this.scene.add(ambientLight);
         this.scene.add(directionalLight);
@@ -50,6 +56,23 @@ export class App extends gfx.GfxApp
     update(deltaTime: number): void 
     {
         this.cameraControls.update(deltaTime);
+
+    }
+
+    createCylinder(mesh: gfx.Mesh3, numSegments: number, height: number)
+    {
+        const vertices: gfx.Vector3[] = [];
+
+        const angleIncrement = (Math.PI * 2) / numSegments;
+
+
+        for(let i=0; i< numSegments; i++){
+            const angle = i * angleIncrement;
+
+            vertices.push(new gfx.Vector3(Math.cos(angle), height/2, Math.sin(angle)));
+            vertices.push(new gfx.Vector3(Math.cos(angle), -height/2, Math.sin(angle)));
+        }
+
 
     }
 }
