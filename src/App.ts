@@ -43,6 +43,11 @@ export class App extends gfx.GfxApp
         directionalLight.position.set(1, 2, 1);
 
         this.createCylinder(this.cylinder, 10, 2);
+        // this.cylinder.material = new gfx.WireframeMaterial();
+        const cylinderMaterial = new gfx.GouraudMaterial();
+        //cylinderMaterial.texture = new gft.Texture();
+        this.cylinder.material = cylinderMaterial;
+
         this.scene.add(this.cylinder);
 
         this.scene.add(ambientLight);
@@ -62,17 +67,36 @@ export class App extends gfx.GfxApp
     createCylinder(mesh: gfx.Mesh3, numSegments: number, height: number)
     {
         const vertices: gfx.Vector3[] = [];
+        const normals: gfx.Vector3[] = [];
+        const indices: number[] = [];
 
         const angleIncrement = (Math.PI * 2) / numSegments;
 
 
-        for(let i=0; i< numSegments; i++){
+        for(let i=0; i<= numSegments; i++){
             const angle = i * angleIncrement;
 
             vertices.push(new gfx.Vector3(Math.cos(angle), height/2, Math.sin(angle)));
             vertices.push(new gfx.Vector3(Math.cos(angle), -height/2, Math.sin(angle)));
         }
 
+         for(let i=0; i< numSegments; i++){
+            indices.push(i*2, i*2+2, i*2+1 );
+            indices.push(i*2+1, i*2+2, i*2+3);
+
+         }
+
+         for(let i=0; i<= numSegments; i++){
+            const angle = i * angleIncrement;
+
+            normals.push(new gfx.Vector3(Math.cos(angle), 0, Math.sin(angle)));
+            normals.push(new gfx.Vector3(Math.cos(angle), 0, Math.sin(angle)));
+        }
+
+
+        mesh.setVertices(vertices);
+        mesh.setIndices(indices);
+        mesh.setNormals(normals);
 
     }
 }
